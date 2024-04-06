@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+from werkzeug.utils import secure_filename
+import os
+import imghdr
 import numpy as np
 
 app = Flask(__name__)
@@ -21,34 +24,34 @@ def preprocess_image(image_path, target_size=(224, 224)):
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            return render_template('index.html', error="No file part")
-        
-        file = request.files['file']
-        
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        if file.filename == '':
-            return render_template('index.html', error="No selected file")
-        
-        if file:
-            # Save the uploaded file
-            file_path = "uploads/" + file.filename
-            file.save(file_path)
-            
-            # Preprocess the uploaded image
-            img = preprocess_image(file_path)
-            
-            # Perform classification
-            prediction = model.predict(img)
-            
-            # Get the predicted class
-            predicted_class_index = np.argmax(prediction)
-            predicted_class = list(class_mappings.keys())[predicted_class_index]
-            
-            return render_template('result.html', filename=file.filename, predicted_class=predicted_class)
-    
+        # Get the uploaded file
+        imagefile = request.files['imagefile']
+
+        # Check if the file is selected
+        if imagefile.filename == '':
+            return render_template('index.html', error="No file selected. Please select an image file."), 400
+
+        # Save the file securely
+        image_path = os.path.join("uploads", secure_filename(imagefile.filename))
+        imagefile.save(image_path)
+
+        # Validate the image format
+        if imghdr.what(image_path) not in ['jpeg', 'png', 'gif', 'bmp']:
+            os.remove(image_path)  # Remove the invalid file
+            return render_template('index.html', error="Invalid image format. Please upload a valid image file."), 400
+
+        # Preprocess the uploaded image
+        img = preprocess_image(image_path)
+
+        # Perform classification
+        prediction = model.predict(img)
+
+        # Get the predicted class
+        predicted_class_index = np.argmax(prediction)
+        predicted_class = list(class_mappings.keys())[predicted_class_index]
+
+        return render_template('result.html', filename=imagefile.filename, predicted_class=predicted_class)
+
     return render_template('index.html')
 
 if __name__ == '__main__':
