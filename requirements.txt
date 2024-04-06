@@ -6,4 +6,5 @@ opencv-python==4.9.0.80
 tensorflow==2.16.1
 tensorflow-io-gcs-filesystem==0.36.0
 Werkzeug==3.0.2
-gunipcorn
+gunicorn==21.2.0
+scikit-learn==1.4.1.post1
