@@ -66,6 +66,18 @@
                 </h3>
               </div>
             </div>
+            {% if prediction != "Notumor" %}
+            <div
+              class="container d-flex justify-content-center p-4"
+              data-aos="fade-up"
+            >
+              <img
+                src="{{ url_for('static', filename='uploads/highlighted_img.jpg') }}"
+                class="img-fluid"
+                alt=""
+              />
+            </div>
+            {% endif %}
           </div>
         </div>
       </section>
