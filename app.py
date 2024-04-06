@@ -50,7 +50,7 @@ def upload_file():
         predicted_class_index = np.argmax(prediction)
         predicted_class = list(class_mappings.keys())[predicted_class_index]
 
-        return render_template('result.html', filename=imagefile.filename, predicted_class=predicted_class)
+        return render_template('result.html', predicted_class=predicted_class)
 
     return render_template('index.html')
 
