@@ -80,7 +80,7 @@ model_path = 'segmentation_model.hdf5'
 unet_model.load_weights(model_path)
 
 def highlight_tumor(image_path):
-    save_path = 'uploads/highlighted_img.jpg' 
+    save_path = 'static/uploads/highlighted_img.jpg' 
     # Read the image
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     image = cv2.resize(image, (256, 256))
@@ -119,7 +119,7 @@ def upload_file():
             return render_template('index.html', error="No file selected. Please select an image file."), 400
 
         # Save the file securely
-        image_path = os.path.join("uploads", secure_filename(imagefile.filename))
+        image_path = os.path.join("static","uploads", secure_filename(imagefile.filename))
         imagefile.save(image_path)
 
         # Validate the image format
