@@ -1,9 +1,14 @@
+import os
+import sys
+
+# Set encoding to UTF-8 for stdout
+sys.stdout.reconfigure(encoding='utf-8')
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress TensorFlow INFO messages
+
 from flask import Flask, render_template, request
 from tensorflow.keras.models import load_model , Model
 from tensorflow.keras.preprocessing import image
-from werkzeug.utils import secure_filename
-import os
-import imghdr
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
@@ -118,17 +123,14 @@ def upload_file():
         if imagefile.filename == '':
             return render_template('index.html', error="No file selected. Please select an image file."), 400
 
-        # Save the file securely
-        image_path = os.path.join("static","uploads", secure_filename(imagefile.filename))
+        # Save the file
+        image_path = "static/uploads/original.jpg"
         imagefile.save(image_path)
 
-        # Validate the image format
-        if imghdr.what(image_path) not in ['jpeg', 'png', 'gif', 'bmp']:
-            os.remove(image_path) 
-            return render_template('index.html', error="Invalid image format. Please upload a valid image file."), 400
-
         predicted_class = classify_image(image_path)
-        highlight_tumor(image_path) 
+
+        if(predicted_class != "Notumor"):
+            highlight_tumor(image_path) 
 
         return render_template('result.html', predicted_class=predicted_class)
 
