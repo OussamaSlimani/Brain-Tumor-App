@@ -67,15 +67,27 @@
               </div>
             </div>
             {% if predicted_class != "Notumor" %}
-            <div
-              class="container d-flex justify-content-center p-4"
-              data-aos="fade-up"
-            >
-              <img
-                src="{{ url_for('static', filename='uploads/highlighted_img.jpg') }}"
-                class="img-fluid"
-                alt=""
-              />
+            <div class="container p-4" data-aos="fade-up">
+              <div class="d-flex justify-content-center">
+                <div class="text-center p-2">
+                  <h5>The original image</h5>
+                  <img
+                    src="{{ url_for('static', filename='uploads/original.jpg') }}"
+                    class="img-fluid"
+                    alt=""
+                    style="height: 300"
+                  />
+                </div>
+                <div class="text-center p-2">
+                  <h5>The highlighted image</h5>
+                  <img
+                    src="{{ url_for('static', filename='uploads/highlighted_img.jpg') }}"
+                    class="img-fluid"
+                    alt=""
+                    style="height: 300"
+                  />
+                </div>
+              </div>
             </div>
             {% endif %}
           </div>
